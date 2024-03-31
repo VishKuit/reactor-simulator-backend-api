@@ -1,0 +1,24 @@
+Variables:
+
+- P0: presion inicial (atm)
+
+- T0 = temperatura inicial (K)
+
+- FT0 = flujo molar total inicial (mol/h)
+
+- yA0 = fraccion molar inicial de A
+
+- yB0 = fraccion molar inicial de B
+
+- yC0 = fraccion molar inicial de C
+
+- yD0 = fraccion molar inicial de D
+
+- yI0 = fraccion molar inicial de I
+
+- k = constante de velocidad (1/s)
+
+
+- Ratm = constante de los gases (0.082 atm L / mol K)
+
+- Delta = cambio de densidad de la mezcla
