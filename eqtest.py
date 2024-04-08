@@ -28,7 +28,7 @@ def model(F,V):
     d           = 0
 
     # Constantes de velocidad
-    k1          = 6.4
+    k1          = 6.40
 
     # Caida de presion
     alfa        = 0
