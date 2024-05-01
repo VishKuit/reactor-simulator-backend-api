@@ -15,7 +15,7 @@ app = Flask(__name__)
 #     app.run(debug=True)
 
 
-app.register_blueprint(example_blueprint)
+app.register_blueprint(example_blueprint, url_prefix="/example")
 
 
 if __name__ == "__main__":
