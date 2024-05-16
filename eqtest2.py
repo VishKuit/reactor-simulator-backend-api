@@ -85,15 +85,21 @@ def model_PTR_flux(F, V):
 
     K = A * np.exp(-Ea / (t0 * Rjmol))
 
+    dPdV = 0
+
+    dTdV = 0
+
     if(caidaPresion == True):
-        P = p0
-    else:
         P = 0 # -> input
+        dPdV = 0 # -> input
+    else:
+        P = p0
 
     if(caidaTemperatura == True):
-        T = t0
-    else:
         T = 0 # -> input
+        dTdV = 0 # -> input
+    else:
+        T = t0
 
     formulas_c = c_formulas()
 
@@ -103,3 +109,10 @@ def model_PTR_flux(F, V):
     CD = eval(formulas_c[3])
 
     ra_formula = formula_ra()
+
+    dFAdV = rA = eval(ra_formula)
+    dFBdV = rB = rA * (b/a)
+    dFCdV = rC = rA * (c/a)
+    dFDdV = rD = rA * (d/a)
+
+    return [dFAdV, dFBdV, dFCdV, dFDdV, dPdV, dTdV]
