@@ -59,11 +59,11 @@ def formula_ra():
 
     return ra
 
-def model_PTR_flux(F, V):
+def model_PFR_flux(F, V):
 
     p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
 
-    FA, FB, FC, FD, P = F
+    FA, FB, FC, FD, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
 
@@ -85,15 +85,28 @@ def model_PTR_flux(F, V):
 
     K = A * np.exp(-Ea / (t0 * Rjmol))
 
+    dPdV = 0
+
+    dTdV = 0
+
     if(caidaPresion == True):
-        P = p0
-    else:
         P = 0 # -> input
+        dPdV = 0 # -> input
+    else:
+        P = p0
 
     if(caidaTemperatura == True):
-        T = t0
-    else:
         T = 0 # -> input
+        dTdV = 0 # -> input
+    else:
+        T = t0
+
+    FT = FA + FB + FC + FD
+
+    yA = FA / FT
+    yB = FB / FT
+    yC = FC / FT
+    yD = FD / FT
 
     formulas_c = c_formulas()
 
@@ -103,3 +116,315 @@ def model_PTR_flux(F, V):
     CD = eval(formulas_c[3])
 
     ra_formula = formula_ra()
+
+    dFAdV = rA = eval(ra_formula)
+    dFBdV = rB = rA * (b/a)
+    dFCdV = rC = rA * (c/a)
+    dFDdV = rD = rA * (d/a)
+
+    return [dFAdV, dFBdV, dFCdV, dFDdV, dPdV, dTdV]
+
+def model_PFR_Conversion(F, V):
+
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+
+    X, P, T = F
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = p0 / (Ratm * t0)
+    CA0 = (p0 * yA0) / (Ratm * t0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0 = FT0 * yA0
+    FB0 = FT0 * yB0
+    FC0 = FT0 * yC0
+    FD0 = FT0 * yD0
+
+    K = A * np.exp(-Ea / (t0 * Rjmol))
+
+    dPdV = 0
+
+    dTdV = 0
+
+    if(caidaPresion == True):
+        dPdV = 0 # -> input
+    else:
+        P = p0
+
+    if(caidaTemperatura == True):
+        dTdV = 0 # -> input
+    else:
+        T = t0
+
+    formulas_c = c_formulas()
+
+    CA = eval(formulas_c[0])
+    CB = eval(formulas_c[1])
+    CC = eval(formulas_c[2])
+    CD = eval(formulas_c[3])
+
+    ra_formula = formula_ra()
+
+    rA = eval(ra_formula)
+    rB = rA * (b/a)
+    rC = rA * (c/a)
+    rD = rA * (d/a)
+
+    dXdV = -rA/FA0
+
+    return [dXdV, dPdV, dTdV]
+
+def model_PBR_flux(F, W):
+
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+
+    FA, FB, FC, FD, P, T = W
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = p0 / (Ratm * t0)
+    CA0 = (p0 * yA0) / (Ratm * t0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0 = FT0 * yA0
+    FB0 = FT0 * yB0
+    FC0 = FT0 * yC0
+    FD0 = FT0 * yD0
+
+    K = A * np.exp(-Ea / (t0 * Rjmol))
+
+    dPdW = 0
+
+    dTdW = 0
+
+    if(caidaPresion == True):
+        dPdW = 0 # -> input
+    else:
+        P = p0
+
+    if(caidaTemperatura == True):
+        dTdW = 0 # -> input
+    else:
+        T = t0
+
+    FT = FA + FB + FC + FD
+
+    yA = FA / FT
+    yB = FB / FT
+    yC = FC / FT
+    yD = FD / FT
+
+    formulas_c = c_formulas()
+
+    CA = eval(formulas_c[0])
+    CB = eval(formulas_c[1])
+    CC = eval(formulas_c[2])
+    CD = eval(formulas_c[3])
+
+    ra_formula = formula_ra()
+
+    dFAdW = rA = eval(ra_formula)
+    dFBdW = rB = rA * (b/a)
+    dFCdW = rC = rA * (c/a)
+    dFDdW = rD = rA * (d/a)
+
+    return [dFAdW, dFBdW, dFCdW, dFDdW, dPdW, dTdW]
+
+def model_PBR_Conversion(F, W):
+
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+
+    X, P, T = W
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = p0 / (Ratm * t0)
+    CA0 = (p0 * yA0) / (Ratm * t0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0 = FT0 * yA0
+    FB0 = FT0 * yB0
+    FC0 = FT0 * yC0
+    FD0 = FT0 * yD0
+
+    K = A * np.exp(-Ea / (t0 * Rjmol))
+
+    dPdW = 0
+
+    dTdW = 0
+
+    if(caidaPresion == True):
+        dPdW = 0 # -> input
+    else:
+        P = p0
+
+    if(caidaTemperatura == True):
+        dTdW = 0 # -> input
+    else:
+        T = t0
+
+    formulas_c = c_formulas()
+
+    CA = eval(formulas_c[0])
+    CB = eval(formulas_c[1])
+    CC = eval(formulas_c[2])
+    CD = eval(formulas_c[3])
+
+    ra_formula = formula_ra()
+
+    rA = eval(ra_formula)
+    rB = rA * (b/a)
+    rC = rA * (c/a)
+    rD = rA * (d/a)
+
+    dXdW = -rA/FA0
+
+    return [dXdW, dPdW, dTdW]
+
+def model_Batch_flux(F, time):
+
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+
+    NA, NB, NC, ND, P, T = time
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = p0 / (Ratm * t0)
+    CA0 = (p0 * yA0) / (Ratm * t0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0 = FT0 * yA0
+    FB0 = FT0 * yB0
+    FC0 = FT0 * yC0
+    FD0 = FT0 * yD0
+
+    K = A * np.exp(-Ea / (t0 * Rjmol))
+
+    dPdtime = 0
+
+    dTdtime = 0
+
+    if(caidaPresion == True):
+        dPdtime = 0 # -> input
+    else:
+        P = p0
+
+    if(caidaTemperatura == True):
+        dTdtime = 0 # -> input
+    else:
+        T = t0
+
+    NT = NA + NB + NC + ND
+
+    yA = NA / NT
+    yB = NB / NT
+    yC = NC / NT
+    yD = ND / NT
+
+    formulas_c = c_formulas()
+
+    CA = eval(formulas_c[0])
+    CB = eval(formulas_c[1])
+    CC = eval(formulas_c[2])
+    CD = eval(formulas_c[3])
+
+    ra_formula = formula_ra()
+
+    rA = eval(ra_formula)
+    rB = rA * (b/a)
+    rC = rA * (c/a)
+    rD = rA * (d/a)
+
+    dNAdt = -rA * V
+    dNBdt = -rB * V
+    dNCdt = -rC * V
+    dNDdt = -rD * V
+
+    return [dNAdt, dNBdt, dNCdt, dNDdt, dPdtime, dTdtime]
+
+def model_PBR_Conversion(F, time):
+
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+
+    X, P, T = time
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = p0 / (Ratm * t0)
+    CA0 = (p0 * yA0) / (Ratm * t0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0 = FT0 * yA0
+    FB0 = FT0 * yB0
+    FC0 = FT0 * yC0
+    FD0 = FT0 * yD0
+
+    K = A * np.exp(-Ea / (t0 * Rjmol))
+
+    dPdtime = 0
+
+    dTdtime = 0
+
+    if(caidaPresion == True):
+        dPdtime = 0 # -> input
+    else:
+        P = p0
+
+    if(caidaTemperatura == True):
+        dTdtime = 0 # -> input
+    else:
+        T = t0
+
+    formulas_c = c_formulas()
+
+    CA = eval(formulas_c[0])
+    CB = eval(formulas_c[1])
+    CC = eval(formulas_c[2])
+    CD = eval(formulas_c[3])
+
+    ra_formula = formula_ra()
+
+    rA = eval(ra_formula)
+    rB = rA * (b/a)
+    rC = rA * (c/a)
+    rD = rA * (d/a)
+
+    dXdtime = (-rA * V) / FA0 
+
+    return [dXdtime, dPdtime, dTdtime]
