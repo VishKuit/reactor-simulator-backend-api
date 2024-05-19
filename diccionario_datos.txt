@@ -1,4 +1,18 @@
+Constantes:
+
+- Ratm = constante de los gases (0.082 atm L / mol K)
+
 Variables:
+
+- RT = tipo de reactor (1 for CSTR, 2 for PFR, 3 for PBR and 4 for Batch)
+
+- FT0 = flujo molar total inicial (mol/h)
+
+- NT0 = numero de moles inicial
+
+- V: volumen del reactor (L)
+
+- VariableType = VT = tipo de variable (1 for conversion, 2 for flujo)
 
 - P0: presion inicial (atm)
 
@@ -14,11 +28,24 @@ Variables:
 
 - yD0 = fraccion molar inicial de D
 
-- yI0 = fraccion molar inicial de I
-
 - k = constante de velocidad (1/s)
 
+- a = coeficiente estequiometrico de A (debe ser negativo, ya que es un reactivo)
 
-- Ratm = constante de los gases (0.082 atm L / mol K)
+- b = coeficiente estequiometrico de B (debe ser negativo, ya que es un reactivo)
+
+- c = coeficiente estequiometrico de C (debe ser positivo, ya que es un producto)
+
+- d = coeficiente estequiometrico de D (debe ser positivo, ya que es un producto)
+
+- EA = energia de activacion (J/mol)
+
+- ArrConst = A = constante de Arrhenius (1/s)
 
 - Delta = cambio de densidad de la mezcla
+
+Calculos:
+
+-
+
+- yI0 = fraccion molar inicial de I
