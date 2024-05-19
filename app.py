@@ -1,21 +1,11 @@
 from flask import Flask
 
-from example_blueprint import example_blueprint
+from routes.web import web_blueprint
 
 
 app = Flask(__name__)
 
-
-# @app.route("/")
-# def hello_geek():
-#     return "<h2>Hello from Flask & Docker</h2>"
-
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
-
-
-app.register_blueprint(example_blueprint, url_prefix="/example")
+app.register_blueprint(web_blueprint, url_prefix="/api/v1")
 
 
 if __name__ == "__main__":

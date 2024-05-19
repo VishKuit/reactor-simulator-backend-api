@@ -98,7 +98,6 @@ except ValueError:
     d = 0
 
 
-
 # Constantes de velocidad
 # k1
 try:
@@ -129,7 +128,6 @@ if pd == 1:
             eqdrop = ""
         case 4:
             eqdrop = ""
-
 
 
 # Calculations:
@@ -191,7 +189,6 @@ def model(F,V):
     # Pressure drop
     if pd == 1:
         dPdV = FA
-
 
     return [dFAdV, dFBdV, dFCdV, dFDdV, dPdV]
 
