@@ -4,7 +4,9 @@ venv/
 # Ignore python cache files
 *.pyc
 __pycache__/
+__pycache__/*
 **/__pycache__/
+**/__pycache__/*
 
 # Ignore png images
 *.png

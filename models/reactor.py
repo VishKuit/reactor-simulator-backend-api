@@ -46,6 +46,7 @@ class Reactor:
         if not self.__seted_up:
             raise Exception("Reactor not set up yet")
 
+        # xAxis = V or W or ñ
         self.__xAxis = np.linspace(self.__ti, self.__tf)
         self.__allF = odeint(
             self.__RTModule.model, self.__F0, self.__xAxis, rtol=1e-7, atol=1e-7
@@ -378,7 +379,21 @@ class Reactor:
 
     @property
     def results(self):
-        return self.__results
+        if not self.__results:
+            raise Exception("No results to return")
+
+        # allF is a 2d Array
+        # Take the first column as the y-axis
+        # Take the corresponding element in the x-axis (same row as the y-axis element)
+        # Return a 2d array, array of points in 2d space
+        # For example
+        # allF = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        # allFInverso = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+        # xAxis = [0, 1, 2]
+        # return [[[0, 1], [1, 4], [2, 7]], [[0, 2], [1, 5], [2, 8]], [[0, 3], [1, 6], [2, 9]]]
+
+        allFInverso = list(map(list, zip(*self.__allF)))
+        return [[[x, y] for x, y in zip(self.__xAxis, row)] for row in allFInverso]
 
     # @results.setter
     # def results(self, value):
@@ -414,30 +429,30 @@ class Reactor:
 # )
 # reactor.run()
 
-# NEW TESTING
-reactor = Reactor()
-reactor.setup_reactor(
-    RT=2,
-    FNV=1200,
-    VT=1,
-    P0=10,
-    T0=533.15,
-    yA0=0.67,
-    yB0=0.33,
-    yC0=0,
-    yD0=0,
-    a=-1,
-    b=-0.5,
-    c=1,
-    d=0,
-    EA=6.40,
-    A=1,
-    rA=1,
-    ti=0,
-    tf=140,
-    CEq=None,
-    pd_eq=None,
-    td_eq=None
-)
-reactor.run()
-reactor.plot()
+# # NEW TESTING
+# reactor = Reactor()
+# reactor.setup_reactor(
+#     RT=2,
+#     FNV=1200,
+#     VT=1,
+#     P0=10,
+#     T0=533.15,
+#     yA0=0.67,
+#     yB0=0.33,
+#     yC0=0,
+#     yD0=0,
+#     a=-1,
+#     b=-0.5,
+#     c=1,
+#     d=0,
+#     EA=6.40,
+#     A=1,
+#     rA=1,
+#     ti=0,
+#     tf=140,
+#     CEq=None,
+#     pd_eq=None,
+#     td_eq=None
+# )
+# reactor.run()
+# reactor.plot()
