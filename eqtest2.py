@@ -1,67 +1,51 @@
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
+from flask import Flask, render_template, request, url_for, redirect
 
-def variableIngress():
-    p0 = 0 # -> input Initial Pressure
+app = Flask(__name__)
 
-    t0 = 0 # -> input Initial Temperature
 
-    yA0 = 0 # -> input
 
-    yB0 = 0 # -> input
+def get_data():
 
-    yC0 = 0 # -> input
+    data = request.get_json()
 
-    yD0 = 0 # -> input
+     # obtener los datos enviados desde Vue.js
 
-    a = 0 # -> input
-
-    b = 0 # -> input
-
-    c = 0 # -> input
-
-    d = 0 # -> input
-
-    Ea = 0 # -> input
-
-    A = 0 # -> input
-
+    # asignar los valores recibidos a las variables correspondientes
+    RT = data.get('RT', 0)
+    p0 = data.get('p0', 0)
+    t0 = data.get('t0', 0)
+    yA0 = data.get('yA0', 0)
+    yB0 = data.get('yB0', 0)
+    yC0 = data.get('yC0', 0)
+    yD0 = data.get('yD0', 0)
+    a = data.get('a', 0)
+    b = data.get('b', 0)
+    c = data.get('c', 0)
+    d = data.get('d', 0)
+    Ea = data.get('Ea', 0)
+    A = data.get('A', 0)
+    caidaPresion = data.get('caidaPresion', False)
+    caidaTemperatura = data.get('caidaTemperatura', False)
+    FT0 = data.get('FT0', 0)
+    NT0 = data.get('NT0', 0)
+    V = data.get('V', 0)
+    CA = data.get('CA', "")
+    CB = data.get('CB', "")
+    CC = data.get('CC', "")
+    CD = data.get('CD', "")
+    ra = data.get('ra', "")
     Ratm = 0.08205746
 
     Rjmol = 8.314472
 
-    caidaPresion = True # -> input crear if para verificar si se ingresa o no
-
-    caidaTemperatura = True # -> input crear if para verificar si se ingresa o no
-
-    FT0 = 0 # -> input
-
-    NT0 = 0 # -> input
-
-    V = 0 # -> input
-
     return [p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V]
-
-def c_formulas():
-
-    CA, CB, CC, CD = ""
-
-    # Inputs for all four of them
-
-    return [CA, CB, CC, CD]
-
-def formula_ra():
-
-    ra = ""
-
-    # Inputs for ra
-
-    return ra
 
 def model_PFR_flux(F, V):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
 
     FA, FB, FC, FD, P, T = F
 
@@ -126,7 +110,7 @@ def model_PFR_flux(F, V):
 
 def model_PFR_Conversion(F, V):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
 
     X, P, T = F
 
@@ -186,7 +170,7 @@ def model_PFR_Conversion(F, V):
 
 def model_PBR_flux(F, W):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
 
     FA, FB, FC, FD, P, T = W
 
@@ -251,7 +235,7 @@ def model_PBR_flux(F, W):
 
 def model_PBR_Conversion(F, W):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
 
     X, P, T = W
 
@@ -311,7 +295,7 @@ def model_PBR_Conversion(F, W):
 
 def model_Batch_flux(F, time):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
 
     NA, NB, NC, ND, P, T = time
 
@@ -381,7 +365,7 @@ def model_Batch_flux(F, time):
 
 def model_Batch_Conversion(F, time):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = variableIngress()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
 
     X, P, T = time
 
