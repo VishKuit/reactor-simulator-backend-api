@@ -43,6 +43,8 @@ def get_data():
     ra = data.get('ra', "")
     ti = data.get('ti', 0)
     tf = data.get('tf', 0)
+    dP = data.get('dP', 0)
+    dT = data.get('dT', 0)
 
     xAxis = np.linspace(ti, tf)
 
