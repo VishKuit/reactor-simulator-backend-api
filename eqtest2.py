@@ -61,7 +61,13 @@ def get_data():
     elif(RT == 1): # PFR - Conversion
         F0 = [0, P0, T0]
         F = odeint(model_PFR_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
-        return jsonify(F)
+        return jsonify({
+                "main_labels" : ['Volume (V)', 'Concentration (F)'],
+                "labels" : ['X', 'P', 'T'],
+                "xAxis" : xAxis.tolist(),
+                "data": [
+                [[x, y] for x, y in zip(xAxis, row)] for row in F.T
+            ]})
     elif(RT == 2): # PBR - Flux
         F0 = [f_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
         F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
