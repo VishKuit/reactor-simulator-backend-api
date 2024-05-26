@@ -11,6 +11,9 @@ class Reactor:
 
     #
     def __init__(self):
+        """
+        Inicializa una instancia vacía del reactor.
+        """
         pass
 
     def setup_reactor(
@@ -37,12 +40,18 @@ class Reactor:
         pd_eq: str = None,
         td_eq: str = None,
     ):
+        """
+        Configura el reactor con los parámetros iniciales.
+        """
         self.__set_initial_object_values(RT, FNV, VT, P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, EA, A, rA, ti, tf, CEq, pd_eq, td_eq)
         self.__RTModule.inital_calculations()
         self.__RTModule.temp_press_equations()
         self.__seted_up = True
 
     def run(self):
+        """
+        Ejecuta el reactor y resuelve las ecuaciones diferenciales.
+        """
         if not self.__seted_up:
             raise Exception("Reactor not set up yet")
 
@@ -55,6 +64,9 @@ class Reactor:
         self.__results = True
 
     def plot(self):
+        """
+        Genera y guarda una gráfica de los resultados del reactor.
+        """
         if not self.__results:
             raise Exception("No results to plot")
 
@@ -71,7 +83,33 @@ class Reactor:
         hash_value = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         plt.savefig(f"static/{hash_value}.png")
 
-    def __set_initial_object_values(self, RT, FNV, VT, P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, EA, A, rA, ti, tf, CEq, pd_eq, td_eq):
+    def __set_initial_object_values(
+        self,
+        RT,
+        FNV,
+        VT,
+        P0,
+        T0,
+        yA0,
+        yB0,
+        yC0,
+        yD0,
+        a,
+        b,
+        c,
+        d,
+        EA,
+        A,
+        rA,
+        ti,
+        tf,
+        CEq,
+        pd_eq,
+        td_eq,
+    ):
+        """
+        Asigna los valores iniciales del objeto.
+        """
         self.__ReactorType = RT
         self.__FNV = FNV
         self.__VariableType = VT
@@ -101,6 +139,7 @@ class Reactor:
         # Assign RTModule to the corresponding reactor type
         # for example, if RT is 2 (PFR), then RTModule is an instance of PFR
         # (1 for CSTR, 2 for PFR, 3 for PBR and 4 for Batch)
+
         if self.__ReactorType == 1:
             self.__RTModule = CSTR(self)
 
@@ -112,6 +151,10 @@ class Reactor:
 
         elif self.__ReactorType == 4:
             self.__RTModule = Batch(self)
+
+
+    # Getters and Setters
+
 
     @property
     def ReactorType(self):
@@ -392,8 +435,16 @@ class Reactor:
         # xAxis = [0, 1, 2]
         # return [[[0, 1], [1, 4], [2, 7]], [[0, 2], [1, 5], [2, 8]], [[0, 3], [1, 6], [2, 9]]]
 
-        allFInverso = list(map(list, zip(*self.__allF)))
-        return [[[x, y] for x, y in zip(self.__xAxis, row)] for row in allFInverso]
+
+
+        return {
+            "labels": self.__RTModule.labels,
+            "mainLabels": self.__RTModule.mainLabels,
+            "xAxis": self.__xAxis.tolist(),
+            "data": [
+                [[x, y] for x, y in zip(self.__xAxis, row)] for row in self.__allF.T
+            ],
+        }
 
     # @results.setter
     # def results(self, value):
