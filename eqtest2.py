@@ -5,11 +5,17 @@ from flask import Flask, render_template, request, url_for, redirect, jsonify
 
 app = Flask(__name__)
 
+@app.route("/reactores", methods=["OPTIONS"])
+def test_options():
+    return jsonify({}), 200
+
+@app.route("/reactores", methods=["POST", "OPTIONS"])
+
 def get_data():
 
     data = request.get_json()
 
-     # obtener los datos enviados desde Vue.js
+    # obtener los datos enviados desde Vue.js
 
     # asignar los valores recibidos a las variables correspondientes
     RT = data.get('RT', 0)
@@ -35,6 +41,10 @@ def get_data():
     CC = data.get('CC', "")
     CD = data.get('CD', "")
     ra = data.get('ra', "")
+    ti = data.get('ti', 0)
+    tf = data.get('tf', 0)
+
+    xAxis = np.linspace(ti, tf)
 
     Ratm = 0.08205746
 
@@ -45,25 +55,49 @@ def get_data():
     variables = [P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra]
 
     if(RT == 0): # PFR - Flux
-        F = odeint(model_PFR_flux, F0, V, rtol=1e-6, atol=1e-6)
+        F0 = [f_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
+        F = odeint(model_PFR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(F)
     elif(RT == 1): # PFR - Conversion
-        F = odeint(model_PFR_Conversion, F0, V, rtol=1e-6, atol=1e-6)
+        F0 = [0, P0, T0]
+        F = odeint(model_PFR_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(F)
     elif(RT == 2): # PBR - Flux
-        F = odeint(model_PBR_flux, F0, V, rtol=1e-6, atol=1e-6)
+        F0 = [f_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
+        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(F)
     elif(RT == 3): # PBR - Conversion
-        F = odeint(model_PBR_Conversion, F0, V, rtol=1e-6, atol=1e-6)
+        F0 = [0, P0, T0]
+        F = odeint(model_PBR_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(F)
     elif(RT == 4): # Batch - Flux
-        F = odeint(model_Batch_flux, F0, V, rtol=1e-6, atol=1e-6)
+        F0 = [n_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
+        F = odeint(model_Batch_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(F)
     elif(RT == 5): # Batch - Conversion
-        F = odeint(model_Batch_Conversion, F0, V, rtol=1e-6, atol=1e-6)
+        F0 = [0, P0, T0]
+        F = odeint(model_Batch_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(F)
     else:
         return jsonify("Error")
+    
+def f_solver(FT0, yA0, yB0, yC0, yD0):
+
+    FA0 = FT0 * yA0
+    FB0 = FT0 * yB0
+    FC0 = FT0 * yC0
+    FD0 = FT0 * yD0
+
+    return [FA0, FB0, FC0, FD0]
+
+def n_solver(NT0, yA0, yB0, yC0, yD0):
+    
+    NA0 = NT0 * yA0
+    NB0 = NT0 * yB0
+    NC0 = NT0 * yC0
+    ND0 = NT0 * yD0
+    
+    return [NA0, NB0, NC0, ND0]
 
 def model_PFR_flux(F, V):
 
@@ -84,10 +118,7 @@ def model_PFR_flux(F, V):
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
 
-    FA0 = FT0 * yA0
-    FB0 = FT0 * yB0
-    FC0 = FT0 * yC0
-    FD0 = FT0 * yD0
+    FA0, FB0, FC0, FD0 = f_solver(FT0, yA0, yB0, yC0, yD0)
 
     K = A * np.exp(-Ea / (T0 * Rjmol))
 
@@ -145,10 +176,7 @@ def model_PFR_Conversion(F, V):
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
 
-    FA0 = FT0 * yA0
-    FB0 = FT0 * yB0
-    FC0 = FT0 * yC0
-    FD0 = FT0 * yD0
+    FA0, FB0, FC0, FD0 = f_solver(FT0, yA0, yB0, yC0, yD0)
 
     K = A * np.exp(-Ea / (T0 * Rjmol))
 
@@ -201,10 +229,7 @@ def model_PBR_flux(F, W):
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
 
-    FA0 = FT0 * yA0
-    FB0 = FT0 * yB0
-    FC0 = FT0 * yC0
-    FD0 = FT0 * yD0
+    FA0, FB0, FC0, FD0 = f_solver(FT0, yA0, yB0, yC0, yD0)
 
     K = A * np.exp(-Ea / (T0 * Rjmol))
 
@@ -262,10 +287,7 @@ def model_PBR_Conversion(F, W):
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
 
-    FA0 = FT0 * yA0
-    FB0 = FT0 * yB0
-    FC0 = FT0 * yC0
-    FD0 = FT0 * yD0
+    FA0, FB0, FC0, FD0 = f_solver(FT0, yA0, yB0, yC0, yD0)
 
     K = A * np.exp(-Ea / (T0 * Rjmol))
 
@@ -318,10 +340,7 @@ def model_Batch_flux(F, time):
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
 
-    NA0 = NT0 * yA0
-    NB0 = NT0 * yB0
-    NC0 = NT0 * yC0
-    ND0 = NT0 * yD0
+    NA0, NB0, NC0, ND0 = n_solver(NT0, yA0, yB0, yC0, yD0)
 
     K = A * np.exp(-Ea / (T0 * Rjmol))
 
@@ -384,10 +403,7 @@ def model_Batch_Conversion(F, time):
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
 
-    NA0 = NT0 * yA0
-    NB0 = NT0 * yB0
-    NC0 = NT0 * yC0
-    ND0 = NT0 * yD0
+    NA0, NB0, NC0, ND0 = n_solver(NT0, yA0, yB0, yC0, yD0)
 
     K = A * np.exp(-Ea / (T0 * Rjmol))
 
