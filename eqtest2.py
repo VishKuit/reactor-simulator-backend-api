@@ -1,11 +1,9 @@
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, jsonify
 
 app = Flask(__name__)
-
-
 
 def get_data():
 
@@ -41,11 +39,34 @@ def get_data():
 
     Rjmol = 8.314472
 
-    return [p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V]
+    global variables
+
+    variables = [p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra]
+
+    if(RT == 0): # PFR - Flux
+        F = odeint(model_PFR_flux, F0, V, rtol=1e-6, atol=1e-6)
+        return jsonify(F)
+    elif(RT == 1): # PFR - Conversion
+        F = odeint(model_PFR_Conversion, F0, V, rtol=1e-6, atol=1e-6)
+        return jsonify(F)
+    elif(RT == 2): # PBR - Flux
+        F = odeint(model_PBR_flux, F0, V, rtol=1e-6, atol=1e-6)
+        return jsonify(F)
+    elif(RT == 3): # PBR - Conversion
+        F = odeint(model_PBR_Conversion, F0, V, rtol=1e-6, atol=1e-6)
+        return jsonify(F)
+    elif(RT == 4): # Batch - Flux
+        F = odeint(model_Batch_flux, F0, V, rtol=1e-6, atol=1e-6)
+        return jsonify(F)
+    elif(RT == 5): # Batch - Conversion
+        F = odeint(model_Batch_Conversion, F0, V, rtol=1e-6, atol=1e-6)
+        return jsonify(F)
+    else:
+        return jsonify("Error")
 
 def model_PFR_flux(F, V):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     FA, FB, FC, FD, P, T = F
 
@@ -92,16 +113,12 @@ def model_PFR_flux(F, V):
     yC = FC / FT
     yD = FD / FT
 
-    formulas_c = c_formulas()
+    CA = eval(CA)
+    CB = eval(CB)
+    CC = eval(CC)
+    CD = eval(CD)
 
-    CA = eval(formulas_c[0])
-    CB = eval(formulas_c[1])
-    CC = eval(formulas_c[2])
-    CD = eval(formulas_c[3])
-
-    ra_formula = formula_ra()
-
-    dFAdV = rA = eval(ra_formula)
+    dFAdV = rA = eval(ra)
     dFBdV = rB = rA * (b/a)
     dFCdV = rC = rA * (c/a)
     dFDdV = rD = rA * (d/a)
@@ -110,7 +127,7 @@ def model_PFR_flux(F, V):
 
 def model_PFR_Conversion(F, V):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     X, P, T = F
 
@@ -150,16 +167,12 @@ def model_PFR_Conversion(F, V):
         dTdV = 0 # No Input
         T = t0
 
-    formulas_c = c_formulas()
+    CA = eval(CA)
+    CB = eval(CB)
+    CC = eval(CC)
+    CD = eval(CD)
 
-    CA = eval(formulas_c[0])
-    CB = eval(formulas_c[1])
-    CC = eval(formulas_c[2])
-    CD = eval(formulas_c[3])
-
-    ra_formula = formula_ra()
-
-    rA = eval(ra_formula)
+    rA = eval(ra)
     rB = rA * (b/a)
     rC = rA * (c/a)
     rD = rA * (d/a)
@@ -170,7 +183,7 @@ def model_PFR_Conversion(F, V):
 
 def model_PBR_flux(F, W):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     FA, FB, FC, FD, P, T = W
 
@@ -217,16 +230,12 @@ def model_PBR_flux(F, W):
     yC = FC / FT
     yD = FD / FT
 
-    formulas_c = c_formulas()
+    CA = eval(CA)
+    CB = eval(CB)
+    CC = eval(CC)
+    CD = eval(CD)
 
-    CA = eval(formulas_c[0])
-    CB = eval(formulas_c[1])
-    CC = eval(formulas_c[2])
-    CD = eval(formulas_c[3])
-
-    ra_formula = formula_ra()
-
-    dFAdW = rA = eval(ra_formula)
+    dFAdW = rA = eval(ra)
     dFBdW = rB = rA * (b/a)
     dFCdW = rC = rA * (c/a)
     dFDdW = rD = rA * (d/a)
@@ -235,7 +244,7 @@ def model_PBR_flux(F, W):
 
 def model_PBR_Conversion(F, W):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     X, P, T = W
 
@@ -275,16 +284,12 @@ def model_PBR_Conversion(F, W):
         dTdW = 0 # No Input
         T = t0
 
-    formulas_c = c_formulas()
+    CA = eval(CA)
+    CB = eval(CB)
+    CC = eval(CC)
+    CD = eval(CD)
 
-    CA = eval(formulas_c[0])
-    CB = eval(formulas_c[1])
-    CC = eval(formulas_c[2])
-    CD = eval(formulas_c[3])
-
-    ra_formula = formula_ra()
-
-    rA = eval(ra_formula)
+    rA = eval(ra)
     rB = rA * (b/a)
     rC = rA * (c/a)
     rD = rA * (d/a)
@@ -295,7 +300,7 @@ def model_PBR_Conversion(F, W):
 
 def model_Batch_flux(F, time):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     NA, NB, NC, ND, P, T = time
 
@@ -342,16 +347,12 @@ def model_Batch_flux(F, time):
     yC = NC / NT
     yD = ND / NT
 
-    formulas_c = c_formulas()
+    CA = eval(CA)
+    CB = eval(CB)
+    CC = eval(CC)
+    CD = eval(CD)
 
-    CA = eval(formulas_c[0])
-    CB = eval(formulas_c[1])
-    CC = eval(formulas_c[2])
-    CD = eval(formulas_c[3])
-
-    ra_formula = formula_ra()
-
-    rA = eval(ra_formula)
+    rA = eval(ra)
     rB = rA * (b/a)
     rC = rA * (c/a)
     rD = rA * (d/a)
@@ -365,7 +366,7 @@ def model_Batch_flux(F, time):
 
 def model_Batch_Conversion(F, time):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V = get_data()
+    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     X, P, T = time
 
@@ -405,16 +406,12 @@ def model_Batch_Conversion(F, time):
         dPdtime = 0 # No Input
         T = t0
 
-    formulas_c = c_formulas()
+    CA = eval(CA)
+    CB = eval(CB)
+    CC = eval(CC)
+    CD = eval(CD)
 
-    CA = eval(formulas_c[0])
-    CB = eval(formulas_c[1])
-    CC = eval(formulas_c[2])
-    CD = eval(formulas_c[3])
-
-    ra_formula = formula_ra()
-
-    rA = eval(ra_formula)
+    rA = eval(ra)
     rB = rA * (b/a)
     rC = rA * (c/a)
     rD = rA * (d/a)
