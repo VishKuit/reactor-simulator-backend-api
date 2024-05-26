@@ -42,7 +42,7 @@ def get_data():
 
     global variables
 
-    variables = [p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra]
+    variables = [P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra]
 
     if(RT == 0): # PFR - Flux
         F = odeint(model_PFR_flux, F0, V, rtol=1e-6, atol=1e-6)
@@ -67,7 +67,7 @@ def get_data():
 
 def model_PFR_flux(F, V):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     FA, FB, FC, FD, P, T = F
 
@@ -78,8 +78,8 @@ def model_PFR_flux(F, V):
     thetaC = yC0 / yA0
     thetaD = yD0 / yA0
 
-    CT0 = p0 / (Ratm * t0)
-    CA0 = (p0 * yA0) / (Ratm * t0)
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
     CB0 = CT0 * yB0
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
@@ -89,7 +89,7 @@ def model_PFR_flux(F, V):
     FC0 = FT0 * yC0
     FD0 = FT0 * yD0
 
-    K = A * np.exp(-Ea / (t0 * Rjmol))
+    K = A * np.exp(-Ea / (T0 * Rjmol))
 
     dPdV = 0
 
@@ -99,13 +99,13 @@ def model_PFR_flux(F, V):
         dPdV = 'Placeholder' # -> input
     else:
         dPdV = 0 # No Input
-        P = p0
+        P = P0
 
     if(caidaTemperatura == True):
         dTdV = 'Placeholder' # -> input
     else:
         dTdV = 0 # No Input
-        T = t0
+        T = T0
 
     FT = FA + FB + FC + FD
 
@@ -128,7 +128,7 @@ def model_PFR_flux(F, V):
 
 def model_PFR_Conversion(F, V):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     X, P, T = F
 
@@ -139,8 +139,8 @@ def model_PFR_Conversion(F, V):
     thetaC = yC0 / yA0
     thetaD = yD0 / yA0
 
-    CT0 = p0 / (Ratm * t0)
-    CA0 = (p0 * yA0) / (Ratm * t0)
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
     CB0 = CT0 * yB0
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
@@ -150,7 +150,7 @@ def model_PFR_Conversion(F, V):
     FC0 = FT0 * yC0
     FD0 = FT0 * yD0
 
-    K = A * np.exp(-Ea / (t0 * Rjmol))
+    K = A * np.exp(-Ea / (T0 * Rjmol))
 
     dPdV = 0
 
@@ -160,13 +160,13 @@ def model_PFR_Conversion(F, V):
         dPdV = 'Placeholder' # -> input
     else:
         dPdV = 0 # No Input
-        P = p0
+        P = P0
 
     if(caidaTemperatura == True):
         dTdV = 'Placeholder' # -> input
     else:
         dTdV = 0 # No Input
-        T = t0
+        T = T0
 
     CA = eval(CA)
     CB = eval(CB)
@@ -184,7 +184,7 @@ def model_PFR_Conversion(F, V):
 
 def model_PBR_flux(F, W):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     FA, FB, FC, FD, P, T = W
 
@@ -195,8 +195,8 @@ def model_PBR_flux(F, W):
     thetaC = yC0 / yA0
     thetaD = yD0 / yA0
 
-    CT0 = p0 / (Ratm * t0)
-    CA0 = (p0 * yA0) / (Ratm * t0)
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
     CB0 = CT0 * yB0
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
@@ -206,7 +206,7 @@ def model_PBR_flux(F, W):
     FC0 = FT0 * yC0
     FD0 = FT0 * yD0
 
-    K = A * np.exp(-Ea / (t0 * Rjmol))
+    K = A * np.exp(-Ea / (T0 * Rjmol))
 
     dPdW = 0
 
@@ -216,13 +216,13 @@ def model_PBR_flux(F, W):
         dPdW = 'Placeholder' # -> input
     else:
         dPdW = 0 # No Input
-        P = p0
+        P = P0
 
     if(caidaTemperatura == True):
         dTdW = 'Placeholder' # -> input
     else:
         dTdW = 0 # No Input
-        T = t0
+        T = T0
 
     FT = FA + FB + FC + FD
 
@@ -245,7 +245,7 @@ def model_PBR_flux(F, W):
 
 def model_PBR_Conversion(F, W):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     X, P, T = W
 
@@ -256,8 +256,8 @@ def model_PBR_Conversion(F, W):
     thetaC = yC0 / yA0
     thetaD = yD0 / yA0
 
-    CT0 = p0 / (Ratm * t0)
-    CA0 = (p0 * yA0) / (Ratm * t0)
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
     CB0 = CT0 * yB0
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
@@ -267,7 +267,7 @@ def model_PBR_Conversion(F, W):
     FC0 = FT0 * yC0
     FD0 = FT0 * yD0
 
-    K = A * np.exp(-Ea / (t0 * Rjmol))
+    K = A * np.exp(-Ea / (T0 * Rjmol))
 
     dPdW = 0
 
@@ -277,13 +277,13 @@ def model_PBR_Conversion(F, W):
         dPdW = 'Placeholder' # -> input
     else:
         dPdW = 0 # No Input
-        P = p0
+        P = P0
 
     if(caidaTemperatura == True):
         dTdW = 'Placeholder' # -> input
     else:
         dTdW = 0 # No Input
-        T = t0
+        T = T0
 
     CA = eval(CA)
     CB = eval(CB)
@@ -301,7 +301,7 @@ def model_PBR_Conversion(F, W):
 
 def model_Batch_flux(F, time):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     NA, NB, NC, ND, P, T = time
 
@@ -312,8 +312,8 @@ def model_Batch_flux(F, time):
     thetaC = yC0 / yA0
     thetaD = yD0 / yA0
 
-    CT0 = p0 / (Ratm * t0)
-    CA0 = (p0 * yA0) / (Ratm * t0)
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
     CB0 = CT0 * yB0
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
@@ -323,7 +323,7 @@ def model_Batch_flux(F, time):
     NC0 = NT0 * yC0
     ND0 = NT0 * yD0
 
-    K = A * np.exp(-Ea / (t0 * Rjmol))
+    K = A * np.exp(-Ea / (T0 * Rjmol))
 
     dPdtime = 0
 
@@ -333,13 +333,13 @@ def model_Batch_flux(F, time):
         dPdtime = 'Placeholder' # -> input
     else:
         dPdtime = 0 # No Input
-        P = p0
+        P = P0
 
     if(caidaTemperatura == True):
         dTdtime = 'Placeholder' # -> input
     else:
         dTdtime = 0 # No Input
-        T = t0
+        T = T0
 
     NT = NA + NB + NC + ND
 
@@ -367,7 +367,7 @@ def model_Batch_flux(F, time):
 
 def model_Batch_Conversion(F, time):
 
-    p0, t0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
 
     X, P, T = time
 
@@ -378,8 +378,8 @@ def model_Batch_Conversion(F, time):
     thetaC = yC0 / yA0
     thetaD = yD0 / yA0
 
-    CT0 = p0 / (Ratm * t0)
-    CA0 = (p0 * yA0) / (Ratm * t0)
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
     CB0 = CT0 * yB0
     CC0 = CT0 * yC0
     CD0 = CT0 * yD0
@@ -389,7 +389,7 @@ def model_Batch_Conversion(F, time):
     NC0 = NT0 * yC0
     ND0 = NT0 * yD0
 
-    K = A * np.exp(-Ea / (t0 * Rjmol))
+    K = A * np.exp(-Ea / (T0 * Rjmol))
 
     dPdtime = 0
 
@@ -399,13 +399,13 @@ def model_Batch_Conversion(F, time):
         dPdtime = 'Placeholder' # -> input
     else:
         dPdtime = 0 # No Input
-        P = p0
+        P = P0
 
     if(caidaTemperatura == True):
         dTdtime = 'Placeholder' # -> input
     else:
         dPdtime = 0 # No Input
-        T = t0
+        T = T0
 
     CA = eval(CA)
     CB = eval(CB)
