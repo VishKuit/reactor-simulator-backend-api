@@ -54,14 +54,14 @@ def get_data():
 
     global variables
 
-    variables = [P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra]
+    variables = [P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT]
 
     if(RT == 0): # PFR - Flux
         F0 = [f_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
         F = odeint(model_PFR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
                 "main_labels" : ['Volume (V)', 'Concentration (F)'],
-                "labels" : ['X', 'P', 'T'],
+                "labels" : ['FA', 'FB', 'FC', 'FD', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
                 [[x, y] for x, y in zip(xAxis, row)] for row in F.T
@@ -81,7 +81,7 @@ def get_data():
         F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
                 "main_labels" : ['Weight (W)', 'Concentration (F)'],
-                "labels" : ['X', 'P', 'T'],
+                "labels" : ['FA', 'FB', 'FC', 'FD', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
                 [[x, y] for x, y in zip(xAxis, row)] for row in F.T
@@ -101,7 +101,7 @@ def get_data():
         F = odeint(model_Batch_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
                 "main_labels" : ['Time (t)', 'Concentration (F)'],
-                "labels" : ['X', 'P', 'T'],
+                "labels" : ['NA', 'NB', 'NC', 'ND', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
                 [[x, y] for x, y in zip(xAxis, row)] for row in F.T
@@ -139,7 +139,7 @@ def n_solver(NT0, yA0, yB0, yC0, yD0):
 
 def model_PFR_flux(F, V):
 
-    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT = variables
 
     FA, FB, FC, FD, P, T = F
 
@@ -164,17 +164,17 @@ def model_PFR_flux(F, V):
 
     dTdV = 0
 
-    if(caidaPresion == True):
-        dPdV = 'Placeholder' # -> input
-    else:
+    if(caidaPresion == False):
         dPdV = 0 # No Input
         P = P0
-
-    if(caidaTemperatura == True):
-        dTdV = 'Placeholder' # -> input
     else:
+        dPdV = eval(dP)
+
+    if(caidaTemperatura == False):
         dTdV = 0 # No Input
         T = T0
+    else:
+        dTdV = eval(dT)
 
     FT = FA + FB + FC + FD
 
@@ -197,7 +197,7 @@ def model_PFR_flux(F, V):
 
 def model_PFR_Conversion(F, V):
 
-    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT = variables
 
     X, P, T = F
 
@@ -222,17 +222,17 @@ def model_PFR_Conversion(F, V):
 
     dTdV = 0
 
-    if(caidaPresion == True):
-        dPdV = 'Placeholder' # -> input
-    else:
+    if(caidaPresion == False):
         dPdV = 0 # No Input
         P = P0
-
-    if(caidaTemperatura == True):
-        dTdV = 'Placeholder' # -> input
     else:
+        dPdV = eval(dP)
+
+    if(caidaTemperatura == False):
         dTdV = 0 # No Input
         T = T0
+    else:
+        dTdV = eval(dT)
 
     CA = eval(CA)
     CB = eval(CB)
@@ -250,7 +250,7 @@ def model_PFR_Conversion(F, V):
 
 def model_PBR_flux(F, W):
 
-    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT = variables
 
     FA, FB, FC, FD, P, T = W
 
@@ -275,17 +275,17 @@ def model_PBR_flux(F, W):
 
     dTdW = 0
 
-    if(caidaPresion == True):
-        dPdW = 'Placeholder' # -> input
-    else:
+    if(caidaPresion == False):
         dPdW = 0 # No Input
         P = P0
-
-    if(caidaTemperatura == True):
-        dTdW = 'Placeholder' # -> input
     else:
+        dPdW = eval(dP)
+
+    if(caidaTemperatura == False):
         dTdW = 0 # No Input
         T = T0
+    else:
+        dTdW = eval(dT)
 
     FT = FA + FB + FC + FD
 
@@ -308,7 +308,7 @@ def model_PBR_flux(F, W):
 
 def model_PBR_Conversion(F, W):
 
-    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT = variables
 
     X, P, T = W
 
@@ -333,17 +333,17 @@ def model_PBR_Conversion(F, W):
 
     dTdW = 0
 
-    if(caidaPresion == True):
-        dPdW = 'Placeholder' # -> input
-    else:
+    if(caidaPresion == False):
         dPdW = 0 # No Input
         P = P0
-
-    if(caidaTemperatura == True):
-        dTdW = 'Placeholder' # -> input
     else:
+        dPdW = eval(dP)
+
+    if(caidaTemperatura == False):
         dTdW = 0 # No Input
         T = T0
+    else:
+        dTdW = eval(dT)
 
     CA = eval(CA)
     CB = eval(CB)
@@ -361,7 +361,7 @@ def model_PBR_Conversion(F, W):
 
 def model_Batch_flux(F, time):
 
-    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT = variables
 
     NA, NB, NC, ND, P, T = time
 
@@ -386,17 +386,17 @@ def model_Batch_flux(F, time):
 
     dTdtime = 0
 
-    if(caidaPresion == True):
-        dPdtime = 'Placeholder' # -> input
-    else:
+    if(caidaPresion == False):
         dPdtime = 0 # No Input
         P = P0
-
-    if(caidaTemperatura == True):
-        dTdtime = 'Placeholder' # -> input
     else:
+        dPdtime = eval(dP)
+
+    if(caidaTemperatura == False):
         dTdtime = 0 # No Input
         T = T0
+    else:
+        dTdtime = eval(dT)
 
     NT = NA + NB + NC + ND
 
@@ -424,7 +424,7 @@ def model_Batch_flux(F, time):
 
 def model_Batch_Conversion(F, time):
 
-    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra = variables
+    P0, T0, yA0, yB0, yC0, yD0, a, b, c, d, Ea, A, Ratm, Rjmol, caidaPresion, caidaTemperatura, FT0, NT0, V, CA, CB, CC, CD, ra, dP, dT = variables
 
     X, P, T = time
 
@@ -449,17 +449,17 @@ def model_Batch_Conversion(F, time):
 
     dTdtime = 0
 
-    if(caidaPresion == True):
-        dPdtime = 'Placeholder' # -> input
-    else:
+    if(caidaPresion == False):
         dPdtime = 0 # No Input
         P = P0
-
-    if(caidaTemperatura == True):
-        dTdtime = 'Placeholder' # -> input
     else:
-        dPdtime = 0 # No Input
+        dPdtime = eval(dP)
+
+    if(caidaTemperatura == False):
+        dTdtime = 0 # No Input
         T = T0
+    else:
+        dTdtime = eval(dT)
 
     CA = eval(CA)
     CB = eval(CB)
