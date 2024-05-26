@@ -43,8 +43,8 @@ def get_data():
     ra = data.get('ra', "")
     ti = data.get('ti', 0)
     tf = data.get('tf', 0)
-    dP = data.get('dP', 0)
-    dT = data.get('dT', 0)
+    dP = data.get('dP', "")
+    dT = data.get('dT', "")
 
     xAxis = np.linspace(ti, tf)
 
@@ -80,7 +80,7 @@ def get_data():
         F0 = [f_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
         F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
-                "main_labels" : ['Volume (V)', 'Concentration (F)'],
+                "main_labels" : ['Weight (W)', 'Concentration (F)'],
                 "labels" : ['X', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
@@ -90,7 +90,7 @@ def get_data():
         F0 = [0, P0, T0]
         F = odeint(model_PBR_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
-                "main_labels" : ['Volume (V)', 'Concentration (F)'],
+                "main_labels" : ['Weight (W)', 'Concentration (F)'],
                 "labels" : ['X', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
@@ -100,7 +100,7 @@ def get_data():
         F0 = [n_solver(FT0, yA0, yB0, yC0, yD0), P0, T0]
         F = odeint(model_Batch_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
-                "main_labels" : ['Volume (V)', 'Concentration (F)'],
+                "main_labels" : ['Time (t)', 'Concentration (F)'],
                 "labels" : ['X', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
@@ -110,7 +110,7 @@ def get_data():
         F0 = [0, P0, T0]
         F = odeint(model_Batch_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify({
-                "main_labels" : ['Volume (V)', 'Concentration (F)'],
+                "main_labels" : ['Time (t)', 'Concentration (F)'],
                 "labels" : ['X', 'P', 'T'],
                 "xAxis" : xAxis.tolist(),
                 "data": [
