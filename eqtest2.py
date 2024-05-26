@@ -13,8 +13,8 @@ def get_data():
 
     # asignar los valores recibidos a las variables correspondientes
     RT = data.get('RT', 0)
-    p0 = data.get('p0', 0)
-    t0 = data.get('t0', 0)
+    P0 = data.get('P0', 0)
+    T0 = data.get('T0', 0)
     yA0 = data.get('yA0', 0)
     yB0 = data.get('yB0', 0)
     yC0 = data.get('yC0', 0)
@@ -35,6 +35,7 @@ def get_data():
     CC = data.get('CC', "")
     CD = data.get('CD', "")
     ra = data.get('ra', "")
+
     Ratm = 0.08205746
 
     Rjmol = 8.314472
@@ -419,3 +420,6 @@ def model_Batch_Conversion(F, time):
     dXdtime = (-rA * V) / NA0 
 
     return [dXdtime, dPdtime, dTdtime]
+
+def model_CSTR():
+    pass
