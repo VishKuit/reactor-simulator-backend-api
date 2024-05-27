@@ -473,6 +473,8 @@ def model_PBR_Conversion(F, W):
         dT,
     ) = variables
 
+    print(W)
+
     X, P, T = W
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
