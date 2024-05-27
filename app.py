@@ -129,7 +129,7 @@ def get_data():
         F0 = f_solver(FT0, yA0, yB0, yC0, yD0)
         F0.append(P0)
         F0.append(T0)
-        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
+        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-3, atol=1e-3)
         data = [[[x, y] for x, y in zip(xAxis, row)] for row in F.T]
         data = [[[x, y if y is not None and not np.isnan(y) else 0.0] for x, y in row] for row in data]  
         return jsonify(
