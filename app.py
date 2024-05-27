@@ -387,7 +387,7 @@ def model_PBR_flux(F, W):
         dT,
     ) = variables
 
-    FA, FB, FC, FD, P, T = W
+    FA, FB, FC, FD, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
 
@@ -473,9 +473,7 @@ def model_PBR_Conversion(F, W):
         dT,
     ) = variables
 
-    print(W)
-
-    X, P, T = W
+    X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
 
@@ -556,7 +554,7 @@ def model_Batch_flux(F, time):
         dT,
     ) = variables
 
-    NA, NB, NC, ND, P, T = time
+    NA, NB, NC, ND, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
 
@@ -647,7 +645,7 @@ def model_Batch_Conversion(F, time):
         dT,
     ) = variables
 
-    X, P, T = time
+    X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
 
