@@ -115,6 +115,8 @@ def get_data():
     elif RT == 1:  # PFR - Conversion
         F0 = [0, P0, T0]
         F = odeint(model_PFR_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
+        data = [[[x, y] for x, y in zip(xAxis, row)] for row in F.T]
+        data = [[[x, y if y is not None and not np.isnan(y) else 0.0] for x, y in row] for row in data]  
         return jsonify(
             {
                 "main_labels": ["Volume (V)", "Concentration (F)"],
@@ -128,12 +130,14 @@ def get_data():
         F0.append(P0)
         F0.append(T0)
         F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
+        data = [[[x, y] for x, y in zip(xAxis, row)] for row in F.T]
+        data = [[[x, y if y is not None and not np.isnan(y) else 0.0] for x, y in row] for row in data]  
         return jsonify(
             {
                 "main_labels": ["Weight (W)", "Concentration (F)"],
                 "labels": ["FA", "FB", "FC", "FD", "P", "T"],
                 "xAxis": xAxis.tolist(),
-                "data": [[[x, y] for x, y in zip(xAxis, row)] for row in F.T],
+                "data": data,
             }
         )
     elif RT == 3:  # PBR - Conversion
