@@ -63,6 +63,7 @@ def get_data():
     dT = data.get("dT", "")
 
     xAxis = np.linspace(ti, tf)
+    
 
     Ratm = 0.08205746
 
@@ -129,7 +130,7 @@ def get_data():
         F0 = f_solver(FT0, yA0, yB0, yC0, yD0)
         F0.append(P0)
         F0.append(T0)
-        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-3, atol=1e-3)
+        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-3, atol=1e-3, mxstep=5000)
         data = [[[x, y] for x, y in zip(xAxis, row)] for row in F.T]
         data = [[[x, y if y is not None and not np.isnan(y) else 0.0] for x, y in row] for row in data]  
         return jsonify(
@@ -439,10 +440,10 @@ def model_PBR_flux(F, W):
     yC = FC / FT
     yD = FD / FT
 
-    CA = eval(CA)
-    CB = eval(CB)
-    CC = eval(CC)
-    CD = eval(CD)
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     dFAdW = rA = eval(ra)
     dFBdW = rB = rA * (b / a)
