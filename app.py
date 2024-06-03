@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_cors import CORS
 from sympy.parsing.latex import parse_latex
+from antlr4 import *
+
 
 from routes.web import web_blueprint
 
