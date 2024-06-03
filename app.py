@@ -3,7 +3,7 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_cors import CORS
-from sympy.parsing.latex import parse_latex
+from sympy.parsing.latex import eval
 from antlr4 import *
 
 
@@ -194,6 +194,17 @@ def get_data():
                 "data": [[[x, y] for x, y in zip(xAxis, row)] for row in F.T],
             }
         )
+    elif RT == 6:  # CSTR
+        F0 = [0, P0, T0]
+        F = odeint(model_CSTR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
+        return jsonify(
+            {
+                "main_labels": ["Time (t)", "Concentration (F)"],
+                "labels": ["X", "P", "T"],
+                "xAxis": xAxis.tolist(),
+                "data": [[[x, y] for x, y in zip(xAxis, row)] for row in F.T],
+            }
+        )
     else:
         return jsonify("Error")
 
@@ -285,7 +296,7 @@ def model_PFR_flux(F, V):
         dPdV = 0  # No Input
         P = P0
     else:
-        dPdV = parse_latex(dP)
+        dPdV = eval(dP)
 
     if caidaTemperatura == False:
         dTdV = 0  # No Input
@@ -298,7 +309,7 @@ def model_PFR_flux(F, V):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
-        dTdV = parse_latex(dT)
+        dTdV = eval(dT)
 
     FT = FA + FB + FC + FD
 
@@ -307,17 +318,17 @@ def model_PFR_flux(F, V):
     yC = FC / FT
     yD = FD / FT
 
-    CA = np.abs(parse_latex(CA))
-    CB = np.abs(parse_latex(CB))
-    CC = np.abs(parse_latex(CC))
-    CD = np.abs(parse_latex(CD))
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     PA = CA
     PB = CB
     PC = CC
     PD = CD
 
-    dFAdV = rA = parse_latex(ra)
+    dFAdV = rA = eval(ra)
     dFBdV = rB = rA * (b / a)
     dFCdV = rC = rA * (c / a)
     dFDdV = rD = rA * (d / a)
@@ -392,7 +403,7 @@ def model_PFR_Conversion(F, V):
         dPdV = 0  # No Input
         P = P0
     else:
-        dPdV = parse_latex(dP)
+        dPdV = eval(dP)
 
     if caidaTemperatura == False:
         dTdV = 0  # No Input
@@ -405,19 +416,19 @@ def model_PFR_Conversion(F, V):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
-        dTdV = parse_latex(dT)
+        dTdV = eval(dT)
 
-    CA = np.abs(parse_latex(CA))
-    CB = np.abs(parse_latex(CB))
-    CC = np.abs(parse_latex(CC))
-    CD = np.abs(parse_latex(CD))
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     PA = CA
     PB = CB
     PC = CC
     PD = CD
 
-    rA = parse_latex(ra)
+    rA = eval(ra)
     rB = rA * (b / a)
     rC = rA * (c / a)
     rD = rA * (d / a)
@@ -494,7 +505,7 @@ def model_PBR_flux(F, W):
         dPdW = 0  # No Input
         P = P0
     else:
-        dPdW = parse_latex(dP)
+        dPdW = eval(dP)
 
     if caidaTemperatura == False:
         dTdW = 0  # No Input
@@ -507,7 +518,7 @@ def model_PBR_flux(F, W):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
-        dTdW = parse_latex(dT)
+        dTdW = eval(dT)
 
     FT = FA + FB + FC + FD
 
@@ -516,17 +527,17 @@ def model_PBR_flux(F, W):
     yC = FC / FT
     yD = FD / FT
 
-    CA = np.abs(parse_latex(CA))
-    CB = np.abs(parse_latex(CB))
-    CC = np.abs(parse_latex(CC))
-    CD = np.abs(parse_latex(CD))
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     PA = CA
     PB = CB
     PC = CC
     PD = CD
 
-    dFAdW = rA = parse_latex(ra)
+    dFAdW = rA = eval(ra)
     dFBdW = rB = rA * (b / a)
     dFCdW = rC = rA * (c / a)
     dFDdW = rD = rA * (d / a)
@@ -601,7 +612,7 @@ def model_PBR_Conversion(F, W):
         dPdW = 0  # No Input
         P = P0
     else:
-        dPdW = parse_latex(dP)
+        dPdW = eval(dP)
 
     if caidaTemperatura == False:
         dTdW = 0  # No Input
@@ -614,19 +625,19 @@ def model_PBR_Conversion(F, W):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
-        dTdW = parse_latex(dT)
+        dTdW = eval(dT)
 
-    CA = np.abs(parse_latex(CA))
-    CB = np.abs(parse_latex(CB))
-    CC = np.abs(parse_latex(CC))
-    CD = np.abs(parse_latex(CD))
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     PA = CA
     PB = CB
     PC = CC
     PD = CD
 
-    rA = parse_latex(ra)
+    rA = eval(ra)
     rB = rA * (b / a)
     rC = rA * (c / a)
     rD = rA * (d / a)
@@ -703,7 +714,7 @@ def model_Batch_flux(F, time):
         dPdtime = 0  # No Input
         P = P0
     else:
-        dPdtime = parse_latex(dP)
+        dPdtime = eval(dP)
 
     if caidaTemperatura == False:
         dTdtime = 0  # No Input
@@ -716,7 +727,7 @@ def model_Batch_flux(F, time):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
-        dTdtime = parse_latex(dT)
+        dTdtime = eval(dT)
 
     NT = NA + NB + NC + ND
 
@@ -725,17 +736,17 @@ def model_Batch_flux(F, time):
     yC = NC / NT
     yD = ND / NT
 
-    CA = np.abs(parse_latex(CA))
-    CB = np.abs(parse_latex(CB))
-    CC = np.abs(parse_latex(CC))
-    CD = np.abs(parse_latex(CD))
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     PA = CA
     PB = CB
     PC = CC
     PD = CD
 
-    rA = parse_latex(ra)
+    rA = eval(ra)
     rB = rA * (b / a)
     rC = rA * (c / a)
     rD = rA * (d / a)
@@ -815,7 +826,7 @@ def model_Batch_Conversion(F, time):
         dPdtime = 0  # No Input
         P = P0
     else:
-        dPdtime = parse_latex(dP)
+        dPdtime = eval(dP)
 
     if caidaTemperatura == False:
         dTdtime = 0  # No Input
@@ -828,19 +839,19 @@ def model_Batch_Conversion(F, time):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
-        dTdtime = parse_latex(dT)
+        dTdtime = eval(dT)
 
-    CA = np.abs(parse_latex(CA))
-    CB = np.abs(parse_latex(CB))
-    CC = np.abs(parse_latex(CC))
-    CD = np.abs(parse_latex(CD))
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
 
     PA = CA
     PB = CB
     PC = CC
     PD = CD
 
-    rA = parse_latex(ra)
+    rA = eval(ra)
     rB = rA * (b / a)
     rC = rA * (c / a)
     rD = rA * (d / a)
@@ -850,8 +861,212 @@ def model_Batch_Conversion(F, time):
     return [dXdtime, dPdtime, dTdtime]
 
 
-def model_CSTR():
-    pass
+def model_CSTR_flux(F, V):
+    (
+        P0,
+        T0,
+        yA0,
+        yB0,
+        yC0,
+        yD0,
+        a,
+        b,
+        c,
+        d,
+        Ea,
+        A,
+        Ratm,
+        Rjmol,
+        caidaPresion,
+        caidaTemperatura,
+        FT0,
+        NT0,
+        V,
+        CA,
+        CB,
+        CC,
+        CD,
+        ra,
+        dP,
+        dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
+    ) = variables
+
+    FA, FB, FC, FD, P, T = F
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0, FB0, FC0, FD0 = f_solver(FT0, yA0, yB0, yC0, yD0)
+
+    K = A * np.exp(-Ea / (T0 * Rjmol))
+
+    dPdV = 0
+
+    dTdV = 0
+
+    if caidaPresion == False:
+        dPdV = 0  # No Input
+        P = P0
+    else:
+        dPdV = eval(dP)
+
+    if caidaTemperatura == False:
+        dTdV = 0  # No Input
+        T = T0
+    else:
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
+        dTdV = eval(dT)
+
+    FT = FA + FB + FC + FD
+
+    yA = FA / FT
+    yB = FB / FT
+    yC = FC / FT
+    yD = FD / FT
+
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
+    dFAdV = rA = eval(ra)
+    dFBdV = rB = rA * (b / a)
+    dFCdV = rC = rA * (c / a)
+    dFDdV = rD = rA * (d / a)
+
+    V=FA0-FA/-rA
+
+    return V
+
+def model_CSTR_Conversion(F, V):
+    (
+        P0,
+        T0,
+        yA0,
+        yB0,
+        yC0,
+        yD0,
+        a,
+        b,
+        c,
+        d,
+        Ea,
+        A,
+        Ratm,
+        Rjmol,
+        caidaPresion,
+        caidaTemperatura,
+        FT0,
+        NT0,
+        V,
+        CA,
+        CB,
+        CC,
+        CD,
+        ra,
+        dP,
+        dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
+    ) = variables
+
+    X, P, T = F
+
+    yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
+
+    thetaA = yA0 / yA0
+    thetaB = yB0 / yA0
+    thetaC = yC0 / yA0
+    thetaD = yD0 / yA0
+
+    CT0 = P0 / (Ratm * T0)
+    CA0 = (P0 * yA0) / (Ratm * T0)
+    CB0 = CT0 * yB0
+    CC0 = CT0 * yC0
+    CD0 = CT0 * yD0
+
+    FA0, FB0, FC0, FD0 = f_solver(FT0, yA0, yB0, yC0, yD0)
+
+    K = A * np.exp(-Ea / (T0 * Rjmol))
+
+    dPdV = 0
+
+    dTdV = 0
+
+    if caidaPresion == False:
+        dPdV = 0  # No Input
+        P = P0
+    else:
+        dPdV = eval(dP)
+
+    if caidaTemperatura == False:
+        dTdV = 0  # No Input
+        T = T0
+    else:
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
+        dTdV = eval(dT)
+
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
+    rA = eval(ra)
+    rB = rA * (b / a)
+    rC = rA * (c / a)
+    rD = rA * (d / a)
+
+    dXdV = -rA / FA0
+
+    return [dXdV, dPdV, dTdV]
 
 
 if __name__ == "__main__":
