@@ -289,7 +289,6 @@ def model_PFR_flux(F, V):
         dTdV = 0  # No Input
         T = T0
     else:
-        dTdV = eval(dT)
         deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
         deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
         deltaHrx = deltaHref + deltaCP * (T - Tref)
@@ -297,6 +296,7 @@ def model_PFR_flux(F, V):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
+        dTdV = eval(dT)
 
     FT = FA + FB + FC + FD
 
@@ -391,7 +391,6 @@ def model_PFR_Conversion(F, V):
         dTdV = 0  # No Input
         T = T0
     else:
-        dTdV = eval(dT)
         deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
         deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
         deltaHrx = deltaHref + deltaCP * (T - Tref)
@@ -399,6 +398,7 @@ def model_PFR_Conversion(F, V):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
+        dTdV = eval(dT)
 
     CA = eval(CA)
     CB = eval(CB)
@@ -488,7 +488,6 @@ def model_PBR_flux(F, W):
         dTdW = 0  # No Input
         T = T0
     else:
-        dTdW = eval(dT)
         deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
         deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
         deltaHrx = deltaHref + deltaCP * (T - Tref)
@@ -496,6 +495,7 @@ def model_PBR_flux(F, W):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
+        dTdW = eval(dT)
 
     FT = FA + FB + FC + FD
 
@@ -590,7 +590,6 @@ def model_PBR_Conversion(F, W):
         dTdW = 0  # No Input
         T = T0
     else:
-        dTdW = eval(dT)
         deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
         deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
         deltaHrx = deltaHref + deltaCP * (T - Tref)
@@ -598,6 +597,7 @@ def model_PBR_Conversion(F, W):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
+        dTdW = eval(dT)
 
     CA = eval(CA)
     CB = eval(CB)
@@ -687,7 +687,6 @@ def model_Batch_flux(F, time):
         dTdtime = 0  # No Input
         T = T0
     else:
-        dTdtime = eval(dT)
         deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
         deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
         deltaHrx = deltaHref + deltaCP * (T - Tref)
@@ -695,6 +694,7 @@ def model_Batch_flux(F, time):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
+        dTdtime = eval(dT)
 
     NT = NA + NB + NC + ND
 
@@ -794,7 +794,6 @@ def model_Batch_Conversion(F, time):
         dTdtime = 0  # No Input
         T = T0
     else:
-        dTdtime = eval(dT)
         deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
         deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
         deltaHrx = deltaHref + deltaCP * (T - Tref)
@@ -802,6 +801,7 @@ def model_Batch_Conversion(F, time):
         HB = HBref + (CpB * (T - Tref))
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
+        dTdtime = eval(dT)
 
     CA = eval(CA)
     CB = eval(CB)
