@@ -305,10 +305,15 @@ def model_PFR_flux(F, V):
     yC = FC / FT
     yD = FD / FT
 
-    CA = parse_latex(CA)
-    CB = parse_latex(CB)
-    CC = parse_latex(CC)
-    CD = parse_latex(CD)
+    CA = np.abs(parse_latex(CA))
+    CB = np.abs(parse_latex(CB))
+    CC = np.abs(parse_latex(CC))
+    CD = np.abs(parse_latex(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     dFAdV = rA = parse_latex(ra)
     dFBdV = rB = rA * (b / a)
@@ -400,10 +405,15 @@ def model_PFR_Conversion(F, V):
         HD = HDref + (CpD * (T - Tref))
         dTdV = parse_latex(dT)
 
-    CA = parse_latex(CA)
-    CB = parse_latex(CB)
-    CC = parse_latex(CC)
-    CD = parse_latex(CD)
+    CA = np.abs(parse_latex(CA))
+    CB = np.abs(parse_latex(CB))
+    CC = np.abs(parse_latex(CC))
+    CD = np.abs(parse_latex(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     rA = parse_latex(ra)
     rB = rA * (b / a)
@@ -509,6 +519,11 @@ def model_PBR_flux(F, W):
     CC = np.abs(parse_latex(CC))
     CD = np.abs(parse_latex(CD))
 
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
     dFAdW = rA = parse_latex(ra)
     dFBdW = rB = rA * (b / a)
     dFCdW = rC = rA * (c / a)
@@ -599,10 +614,15 @@ def model_PBR_Conversion(F, W):
         HD = HDref + (CpD * (T - Tref))
         dTdW = parse_latex(dT)
 
-    CA = parse_latex(CA)
-    CB = parse_latex(CB)
-    CC = parse_latex(CC)
-    CD = parse_latex(CD)
+    CA = np.abs(parse_latex(CA))
+    CB = np.abs(parse_latex(CB))
+    CC = np.abs(parse_latex(CC))
+    CD = np.abs(parse_latex(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     rA = parse_latex(ra)
     rB = rA * (b / a)
@@ -703,10 +723,15 @@ def model_Batch_flux(F, time):
     yC = NC / NT
     yD = ND / NT
 
-    CA = parse_latex(CA)
-    CB = parse_latex(CB)
-    CC = parse_latex(CC)
-    CD = parse_latex(CD)
+    CA = np.abs(parse_latex(CA))
+    CB = np.abs(parse_latex(CB))
+    CC = np.abs(parse_latex(CC))
+    CD = np.abs(parse_latex(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     rA = parse_latex(ra)
     rB = rA * (b / a)
@@ -803,10 +828,15 @@ def model_Batch_Conversion(F, time):
         HD = HDref + (CpD * (T - Tref))
         dTdtime = parse_latex(dT)
 
-    CA = parse_latex(CA)
-    CB = parse_latex(CB)
-    CC = parse_latex(CC)
-    CD = parse_latex(CD)
+    CA = np.abs(parse_latex(CA))
+    CB = np.abs(parse_latex(CB))
+    CC = np.abs(parse_latex(CC))
+    CD = np.abs(parse_latex(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     rA = parse_latex(ra)
     rB = rA * (b / a)
