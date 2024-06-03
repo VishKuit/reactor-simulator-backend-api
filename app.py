@@ -3,7 +3,7 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_cors import CORS
-
+from sympy.parsing.latex import parse_latex
 
 from routes.web import web_blueprint
 
@@ -61,6 +61,15 @@ def get_data():
     tf = data.get("tf", 0)
     dP = data.get("dP", "")
     dT = data.get("dT", "")
+    CpA = data.get("CpA", 0)
+    CpB = data.get("CpB", 0)
+    CpC = data.get("CpC", 0)
+    CpD = data.get("CpD", 0)
+    HAref = data.get("HAref", 0)
+    HBref = data.get("HBref", 0)
+    HCref = data.get("HCref", 0)
+    HDref = data.get("HDref", 0)
+    Tref = data.get("Tref", 0)
 
     xAxis = np.linspace(ti, tf)
     
@@ -98,6 +107,15 @@ def get_data():
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ]
 
     if RT == 0:  # PFR - Flux
@@ -130,15 +148,13 @@ def get_data():
         F0 = f_solver(FT0, yA0, yB0, yC0, yD0)
         F0.append(P0)
         F0.append(T0)
-        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-3, atol=1e-3, mxstep=5000)
-        data = [[[x, y] for x, y in zip(xAxis, row)] for row in F.T]
-        data = [[[x, y if y is not None and not np.isnan(y) else 0.0] for x, y in row] for row in data]  
+        F = odeint(model_PBR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(
             {
                 "main_labels": ["Weight (W)", "Concentration (F)"],
                 "labels": ["FA", "FB", "FC", "FD", "P", "T"],
                 "xAxis": xAxis.tolist(),
-                "data": data,
+                "data": [[[x, y] for x, y in zip(xAxis, row)] for row in F.T],
             }
         )
     elif RT == 3:  # PBR - Conversion
@@ -229,6 +245,15 @@ def model_PFR_flux(F, V):
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ) = variables
 
     FA, FB, FC, FD, P, T = F
@@ -265,6 +290,13 @@ def model_PFR_flux(F, V):
         T = T0
     else:
         dTdV = eval(dT)
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
 
     FT = FA + FB + FC + FD
 
@@ -315,6 +347,15 @@ def model_PFR_Conversion(F, V):
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ) = variables
 
     X, P, T = F
@@ -351,6 +392,13 @@ def model_PFR_Conversion(F, V):
         T = T0
     else:
         dTdV = eval(dT)
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
 
     CA = eval(CA)
     CB = eval(CB)
@@ -396,6 +444,15 @@ def model_PBR_flux(F, W):
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ) = variables
 
     FA, FB, FC, FD, P, T = F
@@ -432,6 +489,13 @@ def model_PBR_flux(F, W):
         T = T0
     else:
         dTdW = eval(dT)
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
 
     FT = FA + FB + FC + FD
 
@@ -482,6 +546,15 @@ def model_PBR_Conversion(F, W):
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ) = variables
 
     X, P, T = F
@@ -518,6 +591,13 @@ def model_PBR_Conversion(F, W):
         T = T0
     else:
         dTdW = eval(dT)
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
 
     CA = eval(CA)
     CB = eval(CB)
@@ -563,6 +643,15 @@ def model_Batch_flux(F, time):
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ) = variables
 
     NA, NB, NC, ND, P, T = F
@@ -599,6 +688,13 @@ def model_Batch_flux(F, time):
         T = T0
     else:
         dTdtime = eval(dT)
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
 
     NT = NA + NB + NC + ND
 
@@ -654,6 +750,15 @@ def model_Batch_Conversion(F, time):
         ra,
         dP,
         dT,
+        CpA,
+        CpB,
+        CpC,
+        CpD,
+        HAref,
+        HBref,
+        HCref,
+        HDref,
+        Tref,
     ) = variables
 
     X, P, T = F
@@ -690,6 +795,13 @@ def model_Batch_Conversion(F, time):
         T = T0
     else:
         dTdtime = eval(dT)
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
 
     CA = eval(CA)
     CB = eval(CB)
