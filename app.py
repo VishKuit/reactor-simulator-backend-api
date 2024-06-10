@@ -314,10 +314,15 @@ def model_PFR_flux(F, V):
     PC = CC
     PD = CD
 
-    dFAdV = rA = eval(ra)
-    dFBdV = rB = rA * (b / a)
-    dFCdV = rC = rA * (c / a)
-    dFDdV = rD = rA * (d / a)
+    rA = eval(ra)
+    rB = rA * (b / a)
+    rC = rA * (c / a)
+    rD = rA * (d / a)
+
+    dFAdV = rA
+    dFBdV = rB
+    dFCdV = rC
+    dFDdV = rD
 
     if caidaPresion == False:
         dPdV = 0  # No Input
