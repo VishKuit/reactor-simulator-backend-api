@@ -269,6 +269,11 @@ def model_PFR_flux(F, V):
         Tref,
     ) = variables
 
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
     FA, FB, FC, FD, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -292,6 +297,8 @@ def model_PFR_flux(F, V):
 
     dTdV = 0
 
+    FT = FA + FB + FC + FD
+
     if caidaPresion == False:
         dPdV = 0  # No Input
         P = P0
@@ -310,8 +317,6 @@ def model_PFR_flux(F, V):
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
         dTdV = eval(dT)
-
-    FT = FA + FB + FC + FD
 
     yA = FA / FT
     yB = FB / FT
@@ -375,6 +380,11 @@ def model_PFR_Conversion(F, V):
         HDref,
         Tref,
     ) = variables
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     X, P, T = F
 
@@ -477,6 +487,11 @@ def model_PBR_flux(F, W):
         HDref,
         Tref,
     ) = variables
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     FA, FB, FC, FD, P, T = F
 
@@ -585,6 +600,11 @@ def model_PBR_Conversion(F, W):
         Tref,
     ) = variables
 
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
     X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -686,6 +706,11 @@ def model_Batch_flux(F, time):
         HDref,
         Tref,
     ) = variables
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     NA, NB, NC, ND, P, T = F
 
@@ -799,6 +824,11 @@ def model_Batch_Conversion(F, time):
         Tref,
     ) = variables
 
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
     X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -900,6 +930,11 @@ def model_CSTR_flux(F, V):
         Tref,
     ) = variables
 
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
     FA, FB, FC, FD, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -968,6 +1003,7 @@ def model_CSTR_flux(F, V):
 
     return V
 
+
 def model_CSTR_Conversion(F, V):
     (
         P0,
@@ -1006,6 +1042,11 @@ def model_CSTR_Conversion(F, V):
         HDref,
         Tref,
     ) = variables
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
 
     X, P, T = F
 
