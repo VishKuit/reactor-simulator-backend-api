@@ -381,11 +381,6 @@ def model_PFR_Conversion(F, V):
         Tref,
     ) = variables
 
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
     X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -516,6 +511,8 @@ def model_PBR_flux(F, W):
 
     dTdW = 0
 
+    FT = FA + FB + FC + FD
+
     if caidaPresion == False:
         dPdW = 0  # No Input
         P = P0
@@ -534,8 +531,6 @@ def model_PBR_flux(F, W):
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
         dTdW = eval(dT)
-
-    FT = FA + FB + FC + FD
 
     yA = FA / FT
     yB = FB / FT
@@ -735,6 +730,8 @@ def model_Batch_flux(F, time):
 
     dTdtime = 0
 
+    NT = NA + NB + NC + ND
+
     if caidaPresion == False:
         dPdtime = 0  # No Input
         P = P0
@@ -753,8 +750,6 @@ def model_Batch_flux(F, time):
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
         dTdtime = eval(dT)
-
-    NT = NA + NB + NC + ND
 
     yA = NA / NT
     yB = NB / NT
