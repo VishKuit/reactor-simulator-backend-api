@@ -299,25 +299,6 @@ def model_PFR_flux(F, V):
 
     FT = FA + FB + FC + FD
 
-    if caidaPresion == False:
-        dPdV = 0  # No Input
-        P = P0
-    else:
-        dPdV = eval(dP)
-
-    if caidaTemperatura == False:
-        dTdV = 0  # No Input
-        T = T0
-    else:
-        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
-        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
-        deltaHrx = deltaHref + deltaCP * (T - Tref)
-        HA = HAref + (CpA * (T - Tref))
-        HB = HBref + (CpB * (T - Tref))
-        HC = HCref + (CpC * (T - Tref))
-        HD = HDref + (CpD * (T - Tref))
-        dTdV = eval(dT)
-
     yA = FA / FT
     yB = FB / FT
     yC = FC / FT
@@ -337,6 +318,25 @@ def model_PFR_flux(F, V):
     dFBdV = rB = rA * (b / a)
     dFCdV = rC = rA * (c / a)
     dFDdV = rD = rA * (d / a)
+
+    if caidaPresion == False:
+        dPdV = 0  # No Input
+        P = P0
+    else:
+        dPdV = eval(dP)
+
+    if caidaTemperatura == False:
+        dTdV = 0  # No Input
+        T = T0
+    else:
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
+        dTdV = eval(dT)
 
     return [dFAdV, dFBdV, dFCdV, dFDdV, dPdV, dTdV]
 
@@ -404,6 +404,23 @@ def model_PFR_Conversion(F, V):
 
     dTdV = 0
 
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
+    rA = eval(ra)
+    rB = rA * (b / a)
+    rC = rA * (c / a)
+    rD = rA * (d / a)
+
+    dXdV = -rA / FA0
+
     if caidaPresion == False:
         dPdV = 0  # No Input
         P = P0
@@ -422,23 +439,6 @@ def model_PFR_Conversion(F, V):
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
         dTdV = eval(dT)
-
-    CA = np.abs(eval(CA))
-    CB = np.abs(eval(CB))
-    CC = np.abs(eval(CC))
-    CD = np.abs(eval(CD))
-
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
-    rA = eval(ra)
-    rB = rA * (b / a)
-    rC = rA * (c / a)
-    rD = rA * (d / a)
-
-    dXdV = -rA / FA0
 
     return [dXdV, dPdV, dTdV]
 
@@ -513,25 +513,6 @@ def model_PBR_flux(F, W):
 
     FT = FA + FB + FC + FD
 
-    if caidaPresion == False:
-        dPdW = 0  # No Input
-        P = P0
-    else:
-        dPdW = eval(dP)
-
-    if caidaTemperatura == False:
-        dTdW = 0  # No Input
-        T = T0
-    else:
-        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
-        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
-        deltaHrx = deltaHref + deltaCP * (T - Tref)
-        HA = HAref + (CpA * (T - Tref))
-        HB = HBref + (CpB * (T - Tref))
-        HC = HCref + (CpC * (T - Tref))
-        HD = HDref + (CpD * (T - Tref))
-        dTdW = eval(dT)
-
     yA = FA / FT
     yB = FB / FT
     yC = FC / FT
@@ -551,6 +532,25 @@ def model_PBR_flux(F, W):
     dFBdW = rB = rA * (b / a)
     dFCdW = rC = rA * (c / a)
     dFDdW = rD = rA * (d / a)
+
+    if caidaPresion == False:
+        dPdW = 0  # No Input
+        P = P0
+    else:
+        dPdW = eval(dP)
+
+    if caidaTemperatura == False:
+        dTdW = 0  # No Input
+        T = T0
+    else:
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
+        dTdW = eval(dT)
 
     return [dFAdW, dFBdW, dFCdW, dFDdW, dPdW, dTdW]
 
@@ -623,6 +623,23 @@ def model_PBR_Conversion(F, W):
 
     dTdW = 0
 
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
+    rA = eval(ra)
+    rB = rA * (b / a)
+    rC = rA * (c / a)
+    rD = rA * (d / a)
+
+    dXdW = -rA / FA0
+
     if caidaPresion == False:
         dPdW = 0  # No Input
         P = P0
@@ -641,23 +658,6 @@ def model_PBR_Conversion(F, W):
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
         dTdW = eval(dT)
-
-    CA = np.abs(eval(CA))
-    CB = np.abs(eval(CB))
-    CC = np.abs(eval(CC))
-    CD = np.abs(eval(CD))
-
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
-    rA = eval(ra)
-    rB = rA * (b / a)
-    rC = rA * (c / a)
-    rD = rA * (d / a)
-
-    dXdW = -rA / FA0
 
     return [dXdW, dPdW, dTdW]
 
@@ -732,25 +732,6 @@ def model_Batch_flux(F, time):
 
     NT = NA + NB + NC + ND
 
-    if caidaPresion == False:
-        dPdtime = 0  # No Input
-        P = P0
-    else:
-        dPdtime = eval(dP)
-
-    if caidaTemperatura == False:
-        dTdtime = 0  # No Input
-        T = T0
-    else:
-        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
-        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
-        deltaHrx = deltaHref + deltaCP * (T - Tref)
-        HA = HAref + (CpA * (T - Tref))
-        HB = HBref + (CpB * (T - Tref))
-        HC = HCref + (CpC * (T - Tref))
-        HD = HDref + (CpD * (T - Tref))
-        dTdtime = eval(dT)
-
     yA = NA / NT
     yB = NB / NT
     yC = NC / NT
@@ -775,6 +756,25 @@ def model_Batch_flux(F, time):
     dNBdt = -rB * V
     dNCdt = -rC * V
     dNDdt = -rD * V
+
+    if caidaPresion == False:
+        dPdtime = 0  # No Input
+        P = P0
+    else:
+        dPdtime = eval(dP)
+
+    if caidaTemperatura == False:
+        dTdtime = 0  # No Input
+        T = T0
+    else:
+        deltaCP = (CpA*a + CpB*b + CpC*c + CpD*d)
+        deltaHref = (HAref*a + HBref*b + HCref*c + HDref*d)
+        deltaHrx = deltaHref + deltaCP * (T - Tref)
+        HA = HAref + (CpA * (T - Tref))
+        HB = HBref + (CpB * (T - Tref))
+        HC = HCref + (CpC * (T - Tref))
+        HD = HDref + (CpD * (T - Tref))
+        dTdtime = eval(dT)
 
     return [dNAdt, dNBdt, dNCdt, dNDdt, dPdtime, dTdtime]
 
@@ -847,6 +847,23 @@ def model_Batch_Conversion(F, time):
 
     dTdtime = 0
 
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
+    rA = eval(ra)
+    rB = rA * (b / a)
+    rC = rA * (c / a)
+    rD = rA * (d / a)
+
+    dXdtime = (-rA * V) / NA0
+
     if caidaPresion == False:
         dPdtime = 0  # No Input
         P = P0
@@ -865,23 +882,6 @@ def model_Batch_Conversion(F, time):
         HC = HCref + (CpC * (T - Tref))
         HD = HDref + (CpD * (T - Tref))
         dTdtime = eval(dT)
-
-    CA = np.abs(eval(CA))
-    CB = np.abs(eval(CB))
-    CC = np.abs(eval(CC))
-    CD = np.abs(eval(CD))
-
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
-    rA = eval(ra)
-    rB = rA * (b / a)
-    rC = rA * (c / a)
-    rD = rA * (d / a)
-
-    dXdtime = (-rA * V) / NA0
 
     return [dXdtime, dPdtime, dTdtime]
 
