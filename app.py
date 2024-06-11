@@ -71,12 +71,21 @@ def get_data():
     HDref = data.get("HDref", 0)
     Tref = data.get("Tref", 0)
 
+    # Solo para CSTR
+
+    X = data.get("X", 0);
+    FA = data.get("FA", 0);
+
     xAxis = np.linspace(ti, tf)
     
 
     Ratm = 0.08205746
 
     Rjmol = 8.314472
+
+    global variablesCSTR
+
+    variablesCSTR = [X, FA]
 
     global variables
 
@@ -908,6 +917,8 @@ def model_CSTR_flux(F, V):
         Tref,
     ) = variables
 
+    (X, FA) = variablesCSTR
+
     FA, FB, FC, FD, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -1016,7 +1027,7 @@ def model_CSTR_Conversion(F, V):
         Tref,
     ) = variables
 
-    X, P, T = F
+    (X, FA) = variablesCSTR
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
 
