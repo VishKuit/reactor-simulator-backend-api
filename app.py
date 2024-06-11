@@ -18,9 +18,7 @@ app.register_blueprint(web_blueprint, url_prefix="/api/v1")
 
 @app.route("/")
 def index():
-    # Redirect to https://vuejs-reactor-simulator-webapp.azurewebsites.net/reactor/
     return redirect("https://vuejs-reactor-simulator-webapp.azurewebsites.net/reactor/")
-    # return "<h2>Hello from Flask & Docker</h2>"
 
 
 @app.route("/reactores", methods=["OPTIONS"])
@@ -194,15 +192,20 @@ def get_data():
                 "data": [[[x, y] for x, y in zip(xAxis, row)] for row in F.T],
             }
         )
-    elif RT == 6:  # CSTR
+    elif RT == 6:  # CSTR - Flux
         F0 = [0, P0, T0]
         F = odeint(model_CSTR_flux, F0, xAxis, rtol=1e-6, atol=1e-6)
         return jsonify(
             {
-                "main_labels": ["Time (t)", "Concentration (F)"],
-                "labels": ["X", "P", "T"],
-                "xAxis": xAxis.tolist(),
-                "data": [[[x, y] for x, y in zip(xAxis, row)] for row in F.T],
+                F
+            }
+        )
+    elif RT == 7:  # CSTR - Flux
+        F0 = [0, P0, T0]
+        F = odeint(model_CSTR_Conversion, F0, xAxis, rtol=1e-6, atol=1e-6)
+        return jsonify(
+            {
+                F
             }
         )
     else:
@@ -268,11 +271,6 @@ def model_PFR_flux(F, V):
         HDref,
         Tref,
     ) = variables
-
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
 
     FA, FB, FC, FD, P, T = F
 
@@ -488,11 +486,6 @@ def model_PBR_flux(F, W):
         Tref,
     ) = variables
 
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
     FA, FB, FC, FD, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -600,11 +593,6 @@ def model_PBR_Conversion(F, W):
         Tref,
     ) = variables
 
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
     X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -706,11 +694,6 @@ def model_Batch_flux(F, time):
         HDref,
         Tref,
     ) = variables
-
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
 
     NA, NB, NC, ND, P, T = F
 
@@ -824,11 +807,6 @@ def model_Batch_Conversion(F, time):
         Tref,
     ) = variables
 
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
     X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -929,11 +907,6 @@ def model_CSTR_flux(F, V):
         HDref,
         Tref,
     ) = variables
-
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
 
     FA, FB, FC, FD, P, T = F
 
@@ -1043,11 +1016,6 @@ def model_CSTR_Conversion(F, V):
         Tref,
     ) = variables
 
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
     X, P, T = F
 
     yl0 = 1 - (yA0 + yB0 + yC0 + yD0)
@@ -1071,6 +1039,23 @@ def model_CSTR_Conversion(F, V):
 
     dTdV = 0
 
+    CA = np.abs(eval(CA))
+    CB = np.abs(eval(CB))
+    CC = np.abs(eval(CC))
+    CD = np.abs(eval(CD))
+
+    PA = CA
+    PB = CB
+    PC = CC
+    PD = CD
+
+    rA = eval(ra)
+    rB = rA * (b / a)
+    rC = rA * (c / a)
+    rD = rA * (d / a)
+
+    dXdV = -rA / FA0
+
     if caidaPresion == False:
         dPdV = 0  # No Input
         P = P0
@@ -1090,25 +1075,9 @@ def model_CSTR_Conversion(F, V):
         HD = HDref + (CpD * (T - Tref))
         dTdV = eval(dT)
 
-    CA = np.abs(eval(CA))
-    CB = np.abs(eval(CB))
-    CC = np.abs(eval(CC))
-    CD = np.abs(eval(CD))
+    V = (FA0 * X)/-rA
 
-    PA = CA
-    PB = CB
-    PC = CC
-    PD = CD
-
-    rA = eval(ra)
-    rB = rA * (b / a)
-    rC = rA * (c / a)
-    rD = rA * (d / a)
-
-    dXdV = -rA / FA0
-
-    return [dXdV, dPdV, dTdV]
-
+    return V
 
 if __name__ == "__main__":
     app.run(debug=True)
